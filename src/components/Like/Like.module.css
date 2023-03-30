@@ -1,0 +1,33 @@
+/* .invisible-button {
+    background: none;
+    border: none;
+    color: #000000;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+    width: auto;
+    height: auto;
+  } */
+
+.invisible-button {
+  background: none;
+  border: none;
+  color: #000000;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+  width: auto;
+  height: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.invisible-button:hover {
+  opacity: 0.7;
+}
+
+.invisible-button:active {
+  transform: translateY(2px);
+}
