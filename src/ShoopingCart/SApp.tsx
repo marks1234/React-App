@@ -1,18 +1,16 @@
-import ShoppingForm from "./ShoppingForm";
-import ShoppingResults from "./ShoppingResults";
+import ShoppingForm from "./components/ShoppingForm";
+import ShoppingResults from "./components/ShoppingResults";
 import { useState } from "react";
 import produce from "immer";
-import { z } from "zod";
+import ShoppingFilter from "./components/ShoppingFilter";
 
-const mySchema = z.object({
-	description: z.string(),
-	amount: z.number(),
-	category: z.string(),
-});
+interface FormData {
+	description: string;
+	amount: number;
+	category: string;
+}
 
-type FormData = z.infer<typeof mySchema>;
-
-const ShoppingApp = () => {
+const SApp = () => {
 	const [mockArray, setMockArray] = useState([
 		{
 			description: "Museum tickets",
@@ -54,17 +52,19 @@ const ShoppingApp = () => {
 		);
 	};
 
+	const onSelectCategory = (data: string) => setCategory(data);
+
 	return (
 		<>
 			<ShoppingForm addItem={handleAdd} />
+			<ShoppingFilter onSelectCategory={onSelectCategory} />
 			<ShoppingResults
 				itemsArray={mockArray}
 				category={category}
-				setCategory={setCategory}
 				onDelete={handleDelete}
 			/>
 		</>
 	);
 };
 
-export default ShoppingApp;
+export default SApp;

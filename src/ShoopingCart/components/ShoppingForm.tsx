@@ -1,15 +1,21 @@
-import React from "react";
 import { z } from "zod";
-import { useForm, FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const schema = z.object({
-	description: z.string().trim(),
-	amount: z.number().positive(),
+	description: z
+		.string({ required_error: "Has to have any description" })
+		.trim()
+		.min(3, { message: "Has to have at least 3 Characters" }),
+	amount: z
+		.number({ invalid_type_error: "Has to be a number!" })
+		.positive({ message: "Has to be a positive number!" }),
 	category: z
 		.string()
 		.trim()
-		.refine((check) => check !== "Choose..."),
+		.refine((check) => check !== "Choose...", {
+			message: "Choose... is not a valid category!",
+		}),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -23,7 +29,7 @@ const ShoppingForm = ({ addItem }: Props) => {
 		register,
 		handleSubmit,
 		reset,
-		formState: { isValid },
+		formState: { errors, isValid },
 	} = useForm<FormData>({ resolver: zodResolver(schema) });
 
 	const onSubmit = (data: FormData) => {
@@ -38,11 +44,14 @@ const ShoppingForm = ({ addItem }: Props) => {
 					Description
 				</label>
 				<input
-					{...register("description")}
+					{...register("description"), {}}
 					id='description'
 					type='text'
 					className='form-control'
 				/>
+				{errors.description && (
+					<p className='text-danger'>{errors.description?.message}</p>
+				)}
 			</div>
 			<div>
 				<label htmlFor='amount' className='form-label'>
@@ -54,6 +63,9 @@ const ShoppingForm = ({ addItem }: Props) => {
 					type='text'
 					className='form-control'
 				/>
+				{errors.amount && (
+					<p className='text-danger'>{errors.amount?.message}</p>
+				)}
 			</div>
 			<div>
 				<label htmlFor='category' className='form-label'>
@@ -70,6 +82,9 @@ const ShoppingForm = ({ addItem }: Props) => {
 					<option value={"Utility"}>Utility</option>
 					<option value={"Entertainment"}>Entertainment</option>
 				</select>
+				{errors.category && (
+					<p className='text-danger'>{errors.category.message}</p>
+				)}
 			</div>
 			<button
 				disabled={!isValid}

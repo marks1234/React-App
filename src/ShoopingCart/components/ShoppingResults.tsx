@@ -1,4 +1,3 @@
-import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 
 const schema = z.array(
@@ -20,18 +19,10 @@ interface Product {
 interface Props {
 	itemsArray: ItemsArray;
 	category: string;
-	setCategory: (category: string) => void;
 	onDelete: (id: Product) => void;
 }
 
-const ShoppingResults = ({
-	itemsArray,
-	category,
-	setCategory,
-	onDelete,
-}: Props) => {
-	const { register, handleSubmit } = useForm();
-
+const ShoppingResults = ({ itemsArray, category, onDelete }: Props) => {
 	const filteredTable = () => {
 		if (category === "all categories") return itemsArray;
 		return itemsArray.filter((item) => item.category === category);
@@ -46,7 +37,7 @@ const ShoppingResults = ({
 		let poundString = new Intl.NumberFormat("en-GB", formatting_options);
 		return poundString.format(num);
 	};
-    
+
 	const renderTable = () =>
 		filteredTable().map((product, index) => {
 			return (
@@ -66,25 +57,8 @@ const ShoppingResults = ({
 			);
 		});
 
-	const onSubmit = (data: FieldValues) => setCategory(data.categories);
-
 	return (
 		<>
-			<div>
-				<select
-					{...register("categories", {
-						onChange: handleSubmit(onSubmit),
-					})}
-					defaultValue='All Categories'
-					className='form-select mt-4'
-					id='category'
-				>
-					<option value={"all categories"}>All Categories</option>
-					<option value={"Grocery"}>Grocery</option>
-					<option value={"Utility"}>Utility</option>
-					<option value={"Entertainment"}>Entertainment</option>
-				</select>
-			</div>
 			<div>
 				<table className='table table-bordered mt-1'>
 					<thead>
@@ -95,7 +69,7 @@ const ShoppingResults = ({
 							<th scope='col'></th>
 						</tr>
 					</thead>
-					<tbody>
+					<tfoot>
 						{renderTable()}
 						<tr>
 							<th>Total</th>
@@ -108,7 +82,7 @@ const ShoppingResults = ({
 								)}
 							</th>
 						</tr>
-					</tbody>
+					</tfoot>
 				</table>
 			</div>
 		</>
